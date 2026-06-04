@@ -10,6 +10,10 @@ Vas a construir la API de un **sistema de gestión de contenidos (CMS) para un b
 
 ## Requisitos funcionales
 
+### Docker
+
+Uso obligatorio de Docker
+
 ### Autenticación
 - Registro, login, refresh token, logout
 - Roles: `admin`, `editor`, `author`, `reader`
