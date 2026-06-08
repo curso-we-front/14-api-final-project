@@ -117,7 +117,7 @@ async function deleteComment(req, res, next) {
 
     const comment = rows[0];
 
-    const userId = req.user?.id;
+    const userId = Number(req.user?.id);
     const role = req.user?.role;
 
     if (comment.user_id !== userId && role !== "admin") {
