@@ -20,14 +20,14 @@ async function createUser({ username, email, password, role }) {
 }
 
 async function findUserByEmail(email) {
-  const [user] = await pool.query("SELECT * FROM users WHERE email = ?", [
+  const [user] = await pool.query("SELECT id, username, email, password, role FROM users WHERE email = ?", [
     email,
   ]);
   return user[0] || null;
 }
 
 async function findUserById(id) {
-  const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
+  const [user] = await pool.query("SELECT id, username, email, role FROM users WHERE id = ?", [id]);
   return user[0] || null;
 }
 
