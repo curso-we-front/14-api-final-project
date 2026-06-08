@@ -1,4 +1,4 @@
-require("dotenv").config();
+
 const express = require("express");
 const articlesRouter = require("./routes/articles");
 const categoriesRouter = require("./routes/categories");
