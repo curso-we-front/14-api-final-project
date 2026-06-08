@@ -1,8 +1,9 @@
 const pool = require("../db/connection");
 const bcrypt = require("bcrypt");
 
+const SALT_ROUNDS = 10;
+
 async function createUser({ username, email, password, role }) {
-  const SALT_ROUNDS = 10;
   const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
   const [result] = await pool.execute(
