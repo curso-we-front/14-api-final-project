@@ -80,18 +80,26 @@ async function getAll(req, res, next) {
 async function create(req, res, next) {
   try {
     const { title, content, slug, status } = req.body;
-    const authorId = Number(req.user?.id);
+
+    if (!req.user?.id) {
+      return res.status(401).json({
+        error: "No autenticado",
+      });
+    }
+
+    const authorId = req.user.id;
 
     const [result] = await pool.execute(
       `INSERT INTO articles
       (title, content, slug, status, author_id)
       VALUES (?, ?, ?, ?, ?)`,
-      [title, content, slug, status, authorId],
+      [title, content, slug, status, authorId]
     );
 
-    const [rows] = await pool.execute("SELECT * FROM articles WHERE id = ?", [
-      result.insertId,
-    ]);
+    const [rows] = await pool.execute(
+      "SELECT * FROM articles WHERE id = ?",
+      [result.insertId]
+    );
 
     res.status(201).json(rows[0]);
   } catch (err) {
