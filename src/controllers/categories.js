@@ -87,8 +87,6 @@ async function removeCategory(req, res, next) {
     const category = rows[0];
 
     const role = req.user?.role;
-    const userId = Number(req.user?.id);
-    const ownerId = Number(category.author_id);
 
     if (role !== "admin" && role !== "editor") {
       return res.status(403).json({
