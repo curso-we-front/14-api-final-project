@@ -9,10 +9,24 @@ async function getAll(req, res, next) {
       searchText,
       page = 1,
       limit = 10,
-      sort = "created_at"
+      sort = "created_at",
     } = req.query;
 
-    const offset = (page - 1) * limit;
+    const allowedSortFields = [
+      "created_at",
+      "updated_at",
+      "title",
+      "status",
+      "author_id",
+    ];
+
+    if (!allowedSortFields.includes(sort)) {
+      return res.status(400).json({
+        error: "Campo de ordenación no válido",
+      });
+    }
+
+    const offset = (Number(page) - 1) * Number(limit);
 
     let sql = `
       SELECT articles.*,
@@ -42,8 +56,14 @@ async function getAll(req, res, next) {
       params.push(`%${searchText}%`, `%${searchText}%`);
     }
 
+    if (category) {
+      sql += " AND categories.name = ?";
+      params.push(category);
+    }
+
     sql += " GROUP BY articles.id";
 
+    // Campo validado mediante whitelist
     sql += ` ORDER BY articles.${sort} DESC`;
 
     sql += " LIMIT ? OFFSET ?";
@@ -56,7 +76,6 @@ async function getAll(req, res, next) {
     next(err);
   }
 }
-
 async function create(req, res, next) {
   try {
     const { title, content, slug, status, author_id } = req.body;
