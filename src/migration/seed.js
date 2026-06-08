@@ -2,12 +2,12 @@ const pool = require("../db/connection");
 const articles = require("../../data/articles.json");
 
 const users = [
-  [1, "Ana García", "ana@test.com", "hash", "author"],
-  [2, "Carlos López", "carlos@test.com", "hash", "author"],
-  [3, "María Torres", "maria@test.com", "hash", "author"],
-  [4, "Pedro Sanz", "pedro@test.com", "hash", "reader"],
-  [5, "Laura Ruiz", "laura@test.com", "hash", "reader"],
-  [6, "Marta Gil", "marta@test.com", "hash", "reader"],
+  [1, "Ana García", "ana@test.com", "password123", "author"],
+  [2, "Carlos López", "carlos@test.com", "password123", "author"],
+  [3, "María Torres", "maria@test.com", "password123", "author"],
+  [4, "Pedro Sanz", "pedro@test.com", "password123", "reader"],
+  [5, "Laura Ruiz", "laura@test.com", "password123", "reader"],
+  [6, "Marta Gil", "marta@test.com", "password123", "reader"],
 ];
 
 const authorMap = {
