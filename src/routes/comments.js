@@ -11,7 +11,6 @@ const {
 const { requireAuth } = require("../middleware/auth");
 const { validateComment } = require("../middleware/validate");
 
-// 👇 ahora la ruta base NO incluye "comments"
 router.get("/articles/:id/comments", getComments);
 
 router.post(
