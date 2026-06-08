@@ -41,11 +41,11 @@ function validateLogin(req, res, next) {
 }
 
 function validateArticle(req, res, next) {
-  const { title, content, slug, status, author_id } = req.body;
+  const { title, content, slug, status } = req.body;
 
-  if (!title || !content || !slug || !author_id) {
+  if (!title || !content || !slug) {
     return res.status(400).json({
-      error: "title, content, slug y author_id son obligatorios",
+      error: "title, content y slug son obligatorios",
     });
   }
 
@@ -69,7 +69,6 @@ function validateArticle(req, res, next) {
 
   next();
 }
-
 function validateCategory(req, res, next) {
   const { name, slug } = req.body;
 

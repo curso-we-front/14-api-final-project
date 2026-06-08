@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.use("/articles", publicLimiter, articlesRouter);
 app.use("/categories", publicLimiter, categoriesRouter);
-app.use("/comments", publicLimiter, commentsRouter);
+app.use("/", publicLimiter, commentsRouter);
 app.use("/auth", authLimiter, authRouter);
 
 app.use(errorHandler);

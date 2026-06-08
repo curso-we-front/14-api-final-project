@@ -76,6 +76,7 @@ async function getAll(req, res, next) {
     next(err);
   }
 }
+
 async function create(req, res, next) {
   try {
     const { title, content, slug, status } = req.body;
