@@ -6,7 +6,7 @@ const { validateArticle } = require("../middleware/validate");
 
 router.get("/", getAll);
 router.post("/", requireAuth, validateArticle, create);
-router.delete("/:id", requireAuth, validateArticle, remove);
+router.delete("/:id", requireAuth, remove);
 router.patch("/:id", requireAuth, update);
 
 module.exports = router;
