@@ -135,7 +135,7 @@ async function update(req, res, next) {
         content ?? article.content,
         slug ?? article.slug,
         status ?? article.status,
-        author_id ?? article.author_id,
+        authorId ?? article.author_id,
         id,
       ],
     );
