@@ -5,8 +5,8 @@ const { requireAuth } = require("../middleware/auth");
 const { validateArticle } = require("../middleware/validate");
 
 router.get("/", getAll);
-router.post("/", requireAuth, validateArticle, create);
-router.delete("/:id", requireAuth, remove);
-router.patch("/:id", requireAuth, update);
+router.post("/", requireAuth, requireRole("admin", "editor"), validateArticle, create);
+router.delete("/:id", requireAuth, requireRole("admin", "editor"), remove);
+router.patch("/:id", requireAuth, requireRole("admin", "editor"), update);
 
 module.exports = router;

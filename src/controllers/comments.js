@@ -88,6 +88,17 @@ async function updateComment(req, res, next) {
       });
     }
 
+    const comment = rows[0];
+
+    const userId = Number(req.user?.id);
+    const role = req.user?.role;
+
+    if (comment.user_id !== userId && role !== "admin") {
+      return res.status(403).json({
+        error: "No tienes permiso para editar este comentario",
+      });
+    }
+
     await pool.execute("UPDATE comments SET content = ? WHERE id = ?", [
       content,
       id,
@@ -135,5 +146,6 @@ async function deleteComment(req, res, next) {
     next(err);
   }
 }
+
 
 module.exports = { getComments, createComment, updateComment, deleteComment };

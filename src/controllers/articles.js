@@ -78,23 +78,20 @@ async function getAll(req, res, next) {
 }
 async function create(req, res, next) {
   try {
-    const { title, content, slug, status, author_id } = req.body;
-    const authorId = Number(req.user?.id ?? null);
-    const role = req.user?.role ?? null;
-
-    if (role !== "admin" && role !== "editor") {
-      return res.status(403).json({
-        error: "No tienes permiso para editar este artículo",
-      });
-    }
+    const { title, content, slug, status } = req.body;
+    const authorId = Number(req.user?.id);
 
     const [result] = await pool.execute(
-      "INSERT INTO articles (title, content, slug, status, author_id) VALUES (?, ?, ?, ?, ?)",
+      `INSERT INTO articles
+      (title, content, slug, status, author_id)
+      VALUES (?, ?, ?, ?, ?)`,
       [title, content, slug, status, authorId],
     );
+
     const [rows] = await pool.execute("SELECT * FROM articles WHERE id = ?", [
       result.insertId,
     ]);
+
     res.status(201).json(rows[0]);
   } catch (err) {
     next(err);

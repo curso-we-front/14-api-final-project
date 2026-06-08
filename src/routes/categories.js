@@ -10,7 +10,7 @@ const { requireAuth } = require("../middleware/auth");
 const { validateCategory } = require("../middleware/validate");
 
 router.get("/", getCategories);
-router.post("/", requireAuth, validateCategory, createCategory);
+router.post("/", requireAuth, requireRole("admin", "editor"), validateCategory, createCategory);
 router.patch("/:id", requireAuth, validateCategory, updateCategory);
 router.delete("/:id", requireAuth, removeCategory);
 
