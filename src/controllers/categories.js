@@ -16,7 +16,7 @@ async function createCategory(req, res, next) {
 
     if (role !== "admin" && role !== "editor") {
       return res.status(403).json({
-        error: "No tienes permiso para editar este artículo",
+        error: "No tienes permiso para editar esta categoria",
       });
     }
 
@@ -52,7 +52,7 @@ async function updateCategory(req, res, next) {
 
     if (role !== "admin" && role !== "editor") {
       return res.status(403).json({
-        error: "No tienes permiso para editar este artículo",
+        error: "No tienes permiso para editar esta categoria",
       });
     }
 
@@ -81,7 +81,7 @@ async function removeCategory(req, res, next) {
     ]);
 
     if (rows.length === 0) {
-      return res.status(404).json({ error: "Artículo no encontrado" });
+      return res.status(404).json({ error: "Categoria no encontrada" });
     }
 
     const category = rows[0];
