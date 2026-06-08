@@ -17,7 +17,7 @@ async function register(req, res, next) {
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRES_IN,
-      },
+      }
     );
 
     res.status(201).json({
@@ -38,9 +38,9 @@ async function register(req, res, next) {
 }
 
 async function login(req, res, next) {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
+
     const user = await findUserByEmail(email);
 
     if (!user) {
@@ -62,17 +62,18 @@ async function login(req, res, next) {
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRES_IN,
-      },
+      }
     );
 
-    const newUser = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-    };
-
-    res.status(200).json({ newUser, token });
+    res.status(200).json({
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    });
   } catch (error) {
     next(error);
   }
