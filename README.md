@@ -1,106 +1,137 @@
-# 14 — Proyecto Final: API REST Completa
+# 🚀 API REST — CMS Blog | MongoDB · Express · Node.js
 
-## Objetivo
+> API REST production-ready para un sistema de gestión de contenidos (CMS) de blog.
 
-Construir una API REST production-ready de principio a fin, integrando todo lo aprendido en el curso.
+## 🗄️ Decisión de base de datos
 
-## Descripción
+He usado **MongoDB** con Mongoose por estas razones:
 
-Vas a construir la API de un **sistema de gestión de contenidos (CMS) para un blog**. La API debe soportar múltiples autores, categorías, comentarios, sistema de roles y estar correctamente documentada.
+- 🧩 La flexibilidad a la hora de crear modelos, añadir campos posteriormente sin romper los datos existentes.
+- 💡 Los datos, al ser prácticamente objetos de JavaScript (artículos, usuarios, comentarios), guardarlos como JSON encaja a la manera de estar practicando anteriormente y resulta más intuituvo.
+- 🛠️ Mongoose resulta de mucha ayuda porque puedes definir el esquema y las validaciones en el mismo sitio que el resto del código JS, y tiene cosas muy útiles como los hooks pre-save (generar el slug automáticamente por ejemplo).
+- 🧠 Con MySql hay que estar cambiando mentalmente entre la sintaxis de javascript y la de MySql, sin embargo con mongoDB es todo puramente javascript. Eso ayuda a tener un flujo mental mas fácil de seguir.
 
-## Requisitos funcionales
+## ⚙️ Instalación y arranque
 
-### Docker
+### 📋 Requisitos previos
 
-Uso obligatorio de Docker
+- Node.js 18+
+- Docker Desktop
 
-### Autenticación
-- Registro, login, refresh token, logout
-- Roles: `admin`, `editor`, `author`, `reader`
+### 🪜 Pasos
 
-### Artículos
-- CRUD completo
-- Un artículo tiene: título, contenido, slug (auto), categorías, tags, autor, estado (`draft`|`published`|`archived`)
-- Solo `editor` y `admin` pueden publicar artículos
-- Solo el autor (o admin/editor) puede editar/borrar
+```bash
+# 1. Clona el repositorio
+git clone <url-del-repositorio>
+cd 14-api-final-project
 
-### Categorías
-- CRUD (solo admin y editor)
-- Un artículo puede tener múltiples categorías
+# 2. Instala las dependencias
+npm install
 
-### Comentarios
-- Cualquier usuario autenticado puede comentar
-- El autor del comentario o un admin puede borrar su comentario
-- Los comentarios pueden tener respuestas (1 nivel de anidación)
+# 3. Crea el archivo de variables de entorno
+cp .env.example .env
+# Rellena los valores en .env
 
-### Búsqueda y filtros
-- `GET /articles?status=published&category=tech&author=id&q=texto&page=1&limit=10&sort=createdAt`
-
-## Requisitos técnicos
-
-- [ ] Express + (MySQL **o** MongoDB, elige uno y justifícalo en el README)
-- [ ] Autenticación JWT con refresh tokens
-- [ ] Validación de todos los inputs
-- [ ] Manejo centralizado de errores
-- [ ] Rate limiting en endpoints públicos y de auth
-- [ ] Variables de entorno para toda la configuración
-- [ ] Tests de integración cubriendo los flujos principales
-- [ ] `README.md` con instrucciones claras para levantar el proyecto
-
-## Estructura sugerida
-
-```
-14-api-final-project/
-├── src/
-│   ├── config/
-│   │   └── index.js          ← toda la config centralizada
-│   ├── db/
-│   │   └── connection.js
-│   ├── models/ (o db/queries)
-│   ├── controllers/
-│   │   ├── auth.js
-│   │   ├── articles.js
-│   │   ├── categories.js
-│   │   └── comments.js
-│   ├── middlewares/
-│   │   ├── auth.js
-│   │   ├── authorize.js
-│   │   ├── validate.js
-│   │   ├── rateLimit.js
-│   │   └── errorHandler.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── articles.js
-│   │   ├── categories.js
-│   │   └── comments.js
-│   ├── utils/
-│   │   └── asyncHandler.js
-│   └── app.js
-├── tests/
-│   ├── auth.test.js
-│   ├── articles.test.js
-│   ├── categories.test.js
-│   └── comments.test.js
-├── .env.example
-├── package.json
-└── README.md                 ← documentación del proyecto
+# 4. Arranca la app (levanta MongoDB con Docker y el servidor)
+npm run dev
 ```
 
-## Entregables
+> [!IMPORTANT]
+> 🔒 Nunca subas el archivo `.env` al repositorio. Usa `.env.example` como plantilla sin valores reales.
 
-1. Repositorio con el código completo
-2. `README.md` con:
-   - Decisión de BD y justificación
-   - Instrucciones de instalación y arranque
-   - Lista de todos los endpoints con método, ruta, auth requerida y descripción
-   - Ejemplos de requests con curl o Postman
-3. Los tests deben pasar con `npm test`
+### 🧪 Tests
 
-## Criterios de evaluación
+```bash
+npm test
+```
 
-- [ ] Todos los endpoints funcionan correctamente
-- [ ] La autenticación y autorización está implementada en todos los recursos
-- [ ] Los errores se manejan correctamente (nunca un 500 sin capturar)
-- [ ] Los tests cubren al menos los flujos: registro/login, CRUD de artículos, permisos
-- [ ] El código está organizado siguiendo el patrón aprendido en el curso
-- [ ] No hay credenciales hardcodeadas (todo en `.env`)
+> [!NOTE]
+> 🐳 Para correr los tests necesitas tener Docker Desktop arrancado y haber ejecutado `npm run dev` previamente para que MongoDB esté disponible.
+
+> [!IMPORTANT]
+> ⚡ La API tiene rate limit activo (10 peticiones cada 15 min en rutas de auth, 100 en rutas públicas). Si los tests fallan por ese motivo, puedes añadir `skip: () => process.env.NODE_ENV === "test"` en cada `rateLimit()` de `src/middlewares/rateLimit.js` y ejecutar los test con normalidad (npm test).
+
+## 📡 Endpoints
+
+### 🔐 Auth
+
+| Método | Ruta           | Auth | Descripción                                          |
+| ------ | -------------- | ---- | ---------------------------------------------------- |
+| POST   | /auth/register | No   | Registra un nuevo usuario                            |
+| POST   | /auth/login    | No   | Inicia sesión, devuelve access token y refresh token |
+| POST   | /auth/refresh  | No   | Renueva el access token usando el refresh token      |
+| DELETE | /auth/logout   | No   | Elimina el refresh token                             |
+
+> [!TIP]
+> ⏱️ El access token expira en 15 minutos. Usa el refresh token (válido 7 días) para obtener uno nuevo sin volver a hacer login.
+
+### 📝 Artículos
+
+| Método | Ruta          | Auth                  | Descripción                                           |
+| ------ | ------------- | --------------------- | ----------------------------------------------------- |
+| GET    | /articles     | No                    | Lista artículos publicados (con filtros y paginación) |
+| GET    | /articles/:id | No                    | Obtiene un artículo por id                            |
+| POST   | /articles     | admin, editor         | Crea un artículo                                      |
+| PATCH  | /articles/:id | Autor, admin o editor | Actualiza parcialmente un artículo                    |
+| PUT    | /articles/:id | Autor, admin o editor | Reemplaza un artículo completo                        |
+| DELETE | /articles/:id | Autor, admin o editor | Elimina un artículo                                   |
+
+**🔍 Filtros disponibles en GET /articles:**
+
+```
+?status=published&category=<id>&author=<id>&q=texto&page=1&limit=10&sort=createdAt&populate=author
+```
+
+### 🏷️ Categorías
+
+| Método | Ruta            | Auth          | Descripción                  |
+| ------ | --------------- | ------------- | ---------------------------- |
+| GET    | /categories     | No            | Lista todas las categorías   |
+| GET    | /categories/:id | No            | Obtiene una categoría por id |
+| POST   | /categories     | admin, editor | Crea una categoría           |
+| PATCH  | /categories/:id | admin, editor | Actualiza una categoría      |
+| DELETE | /categories/:id | admin, editor | Elimina una categoría        |
+
+### 💬 Comentarios
+
+| Método | Ruta                              | Auth                         | Descripción                          |
+| ------ | --------------------------------- | ---------------------------- | ------------------------------------ |
+| GET    | /articles/:id/comments            | No                           | Lista los comentarios de un artículo |
+| POST   | /articles/:id/comments            | Autenticado                  | Crea un comentario en un artículo    |
+| DELETE | /articles/:id/comments/:commentId | Autor del comentario o admin | Elimina un comentario                |
+
+> [!WARNING]
+> 🛡️ Los endpoints de creación, edición y borrado requieren un Bearer token válido en la cabecera `Authorization`. Sin él se devuelve un `401`.
+
+## 📸 Ejemplos de requests
+
+> [!NOTE]
+> 📷 Las siguientes capturas muestran los principales flujos desde Postman.
+
+### 📝 Registro
+
+![Registro](assets/register-postman.png)
+
+### 🔑 Login
+
+![Login](assets/login-postman.png)
+
+### ✍️ Crear artículo
+
+![Crear artículo](assets/post-articles-postman.png)
+
+### 📋 Listar artículos con filtros
+
+![Listar artículos con filtros](assets/filter-articles-postman.png)
+
+### 💬 Crear comentario
+
+![Crear comentario](assets/comment-postman.png)
+
+### 🔄 Refresh token
+
+![Refresh token](assets/refreshtoken-postman.png)
+
+### 🚪 Logout
+
+![Logout](assets/logout-postman.png)
