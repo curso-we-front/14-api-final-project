@@ -5,6 +5,7 @@ const User = require("../src/models/User")
 const Article = require("../src/models/Article")
 const Comment = require("../src/models/Comment")
 const { Types } = require("mongoose")
+const { ARTICLE_STATUS } = require("../src/config/articleStatus")
 
 describe("Comment", () => {
   beforeAll(async () => {
@@ -39,7 +40,7 @@ describe("Comment", () => {
       author: userId.body.id,
       title: "Test",
       content: "Contenido de prueba para el test de comments",
-      status: "published",
+      status: ARTICLE_STATUS.PUBLISHED,
     })
     const res = await request(app).get(`/articles/${article._id}/comments`)
     expect(res.status).toBe(200)
@@ -54,7 +55,7 @@ describe("Comment", () => {
       author: user.body.id,
       title: "Test",
       content: "Contenido de prueba para el test de comments",
-      status: "published",
+      status: ARTICLE_STATUS.PUBLISHED,
     })
     const token = await loginUser()
     const res = await request(app)
@@ -81,7 +82,7 @@ describe("Comment", () => {
       author: user.body.id,
       title: "Test",
       content: "Contenido de prueba para el test de comments",
-      status: "published",
+      status: ARTICLE_STATUS.PUBLISHED,
     })
     const comment = await Comment.create({
       article: article._id,

@@ -5,17 +5,18 @@ const { authorize } = require("../middlewares/authorize")
 const router = Router()
 const { validateBody, categorySchema } = require("../middlewares/validate")
 const { publicLimit } = require("../middlewares/rateLimit")
+const { CONTENT_MANAGERS } = require("../config/roles")
 
 router.get("/", publicLimit, getAll)
 router.get("/:id", publicLimit, getOne)
-router.post("/", requireAuth, authorize("admin", "editor"), validateBody(categorySchema), create)
+router.post("/", requireAuth, authorize(...CONTENT_MANAGERS), validateBody(categorySchema), create)
 router.patch(
   "/:id",
   requireAuth,
-  authorize("admin", "editor"),
+  authorize(...CONTENT_MANAGERS),
   validateBody(categorySchema),
   update,
 )
-router.delete("/:id", requireAuth, authorize("admin", "editor"), remove)
+router.delete("/:id", requireAuth, authorize(...CONTENT_MANAGERS), remove)
 
 module.exports = router

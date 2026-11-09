@@ -1,5 +1,10 @@
 const Comment = require("../models/Comment")
 const asyncHandler = require("../utils/asyncHandler")
+const { ROLES } = require("../config/roles")
+
+const canDelete = (comment, user) => {
+  return comment.author.toString() === user.id.toString() || user.role === ROLES.ADMIN
+}
 
 const getAll = asyncHandler(async (req, res) => {
   const { id } = req.params
@@ -21,7 +26,7 @@ const remove = asyncHandler(async (req, res) => {
   if (!comment) {
     return res.status(404).json({ error: "Comment not found" })
   }
-  if (comment.author.toString() !== req.user.id.toString() && req.user.role !== "admin") {
+  if (!canDelete(comment, req.user)) {
     return res.status(403).json({ error: "Unauthorized" })
   }
   await Comment.findByIdAndDelete(commentId)

@@ -7,6 +7,7 @@ const categories = require("../../data/categories")
 const Category = require("../models/Category")
 const bcrypt = require("bcryptjs")
 const SALT_ROUNDS = 10
+const { ARTICLE_STATUS } = require("../config/articleStatus")
 
 async function seed() {
   try {
@@ -24,7 +25,7 @@ async function seed() {
 
     for (const article of articles) {
       const articleAuthor = await User.findOne({ name: article.author })
-      const status = article.published ? "published" : "draft"
+      const status = article.published ? ARTICLE_STATUS.PUBLISHED : ARTICLE_STATUS.DRAFT
       const newArticle = {
         title: article.title,
         author: articleAuthor._id,

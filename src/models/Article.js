@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const slugify = require("slugify")
+const { ARTICLE_STATUS } = require("../config/articleStatus")
 const articleSchema = new mongoose.Schema(
   {
     title: {
@@ -20,8 +21,8 @@ const articleSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["draft", "published", "archived"],
-      default: "draft",
+      enum: Object.values(ARTICLE_STATUS),
+      default: ARTICLE_STATUS.DRAFT,
     },
     tags: [String],
     categories: [

@@ -4,6 +4,7 @@ const { connect, disconnect } = require("../src/db/connection")
 const User = require("../src/models/User")
 const Article = require("../src/models/Article")
 const { Types } = require("mongoose")
+const { ARTICLE_STATUS } = require("../src/config/articleStatus")
 
 describe("Article", () => {
   beforeAll(async () => {
@@ -93,7 +94,7 @@ describe("Article", () => {
       author: userId,
       title: "Test",
       content: "Esto es un artículo de prueba",
-      status: "published",
+      status: ARTICLE_STATUS.PUBLISHED,
     })
     const token = await loginUser()
     const res = await request(app)
@@ -113,7 +114,7 @@ describe("Article", () => {
       author: userId,
       title: "Test",
       content: "Esto es un artículo de prueba",
-      status: "published",
+      status: ARTICLE_STATUS.PUBLISHED,
     })
     await request(app)
       .post("/auth/register")
@@ -142,7 +143,7 @@ describe("Article", () => {
       author: userId,
       title: "Test",
       content: "Esto es un artículo de prueba",
-      status: "published",
+      status: ARTICLE_STATUS.PUBLISHED,
     })
     const res = await request(app)
       .delete(`/articles/${article._id}`)

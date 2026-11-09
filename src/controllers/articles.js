@@ -2,6 +2,12 @@ const Article = require("../models/Article")
 const PAGE_DEFAULT = 1
 const LIMIT_DEFAULT = 10
 const asyncHandler = require("../utils/asyncHandler")
+const { CONTENT_MANAGERS } = require("../config/roles")
+const { ARTICLE_STATUS } = require("../config/articleStatus")
+
+const canModify = (article, user) => {
+  return article.author.toString() === user.id.toString() || CONTENT_MANAGERS.includes(user.role)
+}
 
 const getAll = asyncHandler(async (req, res) => {
   const {
@@ -18,7 +24,7 @@ const getAll = asyncHandler(async (req, res) => {
   const pageNumber = Number(page)
   const limitNumber = Number(limit)
   const filters = {
-    status: status || "published",
+    status: status || ARTICLE_STATUS.PUBLISHED,
   }
   if (tag) {
     filters.tags = tag
@@ -75,11 +81,7 @@ const replace = asyncHandler(async (req, res) => {
   if (!article) {
     return res.status(404).json({ error: "Article not found" })
   }
-  if (
-    article.author.toString() !== req.user.id.toString() &&
-    req.user.role !== "admin" &&
-    req.user.role !== "editor"
-  ) {
+  if (!canModify(article, req.user)) {
     return res.status(403).json({ error: "Unauthorized" })
   }
   article.title = title
@@ -99,11 +101,7 @@ const update = asyncHandler(async (req, res) => {
   if (!article) {
     return res.status(404).json({ error: "Article not found" })
   }
-  if (
-    article.author.toString() !== req.user.id.toString() &&
-    req.user.role !== "admin" &&
-    req.user.role !== "editor"
-  ) {
+  if (!canModify(article, req.user)) {
     return res.status(403).json({ error: "Unauthorized" })
   }
   if (title !== undefined) article.title = title
@@ -122,11 +120,7 @@ const remove = asyncHandler(async (req, res) => {
   if (!article) {
     return res.status(404).json({ error: "Article not found" })
   }
-  if (
-    article.author.toString() !== req.user.id.toString() &&
-    req.user.role !== "admin" &&
-    req.user.role !== "editor"
-  ) {
+  if (!canModify(article, req.user)) {
     return res.status(403).json({ error: "Unauthorized" })
   }
   await Article.findByIdAndDelete(id)

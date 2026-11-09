@@ -1,9 +1,11 @@
+const MONGO_DUPLICATE_KEY_ERROR = 11000
+
 function errorHandler(err, req, res, next) {
   if (err.name === "ValidationError") {
     return res.status(400).json({ error: err.message })
   }
 
-  if (err.code === 11000) {
+  if (err.code === MONGO_DUPLICATE_KEY_ERROR) {
     const field = Object.keys(err.keyValue)[0]
     return res.status(400).json({ error: `${field} already exists` })
   }
